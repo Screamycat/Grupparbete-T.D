@@ -5,52 +5,56 @@ from utils import *
 # Given data
 E_modul = 210e9  # [Pa]
 sigma_s = 230e6 # [Pa]
-L = 2.5  # [m]
+L = 2  # [m]
 A_0 = 78.5e-1 # [m^2]
-A_4_6_9 = 2 * A_0
+A_Large = 2 * A_0
 P = 150e3  # [N]
 
-# ## Topology
-# Edof = np.array([
-# [dofx1, dofy1, dofx2, dofy2],
-# ...
-# ], dtype=int )
-# # Koordinater för varje nod:
-# Coord = np.array([
-# [0.0, 0.0],
-# ...
-# ])
-# # x-koordinater för varje element
-# Ex = np.array([
-# [0.0, 0.0],
-# ...
-# ])
-# # y-koordinater för varje element
-# Ex = np.array([
-# [0.0, 0.0],
-# ...
-# ])
-# #Hjälpvariabler:
-# nel = ... # Antal element
-# ndofs = ... #Totalt antal frihetsgrader
-# # Plot mesh (tips: använd eldraw2 i utils.py)
-# ...
-# # Fördefinera styvhetsmatrisen och kraftvektorn
-# K = ...
-# f = ...
-# # Assemblera elemented
-# for el in range(nel):
-# #Räkna ut styvhetsmatrisen (Se föreläsningar eller Ekvation 11.18 i kursboken
-# [Hållfasthetslära, Allmänna tillstånd])
-# Ke = ...
-# #Assemblera in element styvhetsmatrisen och globala matrisen
-# K = assem(Edof[el, :], K, Ke)
-# # Lägg till kraften P i lastvektorn:
-# ...
-# # Lös ekvations systemet (: använd solveq i utils.py)
-# ...
-# # Plotta deformerad mesh (: använd eldisp2 i utils.py)
-# ...
-# # Räkna ut krafter och spänningar i varje element
-# for el in range(nel):
-# #... tips: använd bar2s i utils.py
+# 1.
+# Numrera noder och frihetsgrader
+# Noder:
+coords = np.array([
+    [0, 0],
+    [L, 0],
+    [0, 2*L],
+    [L, 2*L],
+    [3*L, 2*L],
+    [L, 3*L],
+    [3*L, 3*L]
+])
+#Frihetsgrader:
+dofs = np.array([
+    [1, 2],
+    [3, 4],
+    [5, 6],
+    [7, 8],
+    [9, 10],
+    [11, 12],
+    [13, 14]
+])
+#Element
+edof = np.array([
+    [3, 4, 7, 8],       # Stång 1
+    [3, 4, 5, 6],       # Stång 2
+    [1, 2, 7, 8],       # Stång 3
+    [1, 2, 5, 6],       # Stång 4
+    [5, 6, 7, 8],       # Stång 5
+    [5, 6, 11, 12],     # Stång 6
+    [7, 8, 11, 12],     # Stång 7
+    [7, 8, 9, 10],      # Stång 8
+    [9, 10, 11, 12],    # Stång 9
+    [11, 12, 13, 14],   # Stång 10
+    [9, 10, 13, 14],    # Stång 11
+])
+
+# 2.
+# Sätta upp styvhetsmatrisen och lösa ekvationssystemet
+ndofs = np.max(edof)  # Antal frihetsgrader
+K = np.zeros((ndofs, ndofs))  # Global styvhetsmatris
+f = np.zeros(ndofs)  # Lastvektor
+
+# P = 150 kN i nod 10
+f[9] = -P 
+
+# Stångareor (2A0 för stänger 4, 6, 9)
+A = np.array([A_0, A_0, A_0, A_Large, A_0, A_Large, A_0, A_0, A_Large, A_0, A_0])
