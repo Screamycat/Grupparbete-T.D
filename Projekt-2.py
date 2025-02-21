@@ -56,5 +56,30 @@ f = np.zeros(ndofs)  # Lastvektor
 # P = 150 kN i nod 10
 f[9] = -P 
 
-# Stångareor (2A0 för stänger 4, 6, 9)
+# Stångareor
 A = np.array([A_0, A_0, A_0, A_Large, A_0, A_Large, A_0, A_0, A_Large, A_0, A_0])
+
+# Funktion för att skapa stångens styvhetsmatris
+def bar_stiffness_matrix(E, A, ex, ey):
+    L = np.sqrt((ex[1] - ex[0]) ** 2 + (ey[1] - ey[0]) ** 2)  # Längd
+    C = (ex[1] - ex[0]) / L  # Cosinus
+    S = (ey[1] - ey[0]) / L  # Sinus
+
+    # Lokala styvhetsmatrisen
+    k_local = (E * A / L) * np.array([
+        [ C**2,  C*S, -C**2, -C*S],
+        [ C*S,  S**2, -C*S, -S**2],
+        [-C**2, -C*S,  C**2,  C*S],
+        [-C*S, -S**2,  C*S,  S**2]
+    ])
+    return k_local
+
+for i in range(len(edof)):
+    ex, ey = coordxtr(edof[i].reshape(1, -1), coords, dofs)  # Hämta nodkoordinater
+    ex, ey = ex.flatten(), ey.flatten()
+
+    Ke = bar_stiffness_matrix(E_modul, A[i], ex, ey)  # Beräkna stångens styvhetsmatris
+    K = assem(edof[i], K, Ke)  # Montera in i globala styvhetsmatrisen
+
+plt.plot(coords[:, 0], coords[:, 1], 'o')
+plt.show()
