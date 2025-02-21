@@ -32,7 +32,7 @@ def coordxtr(edof, coords, dofs, nen=-1):
         nElementNodes = int(nElementDofs/nDofs)
     else:
         nElementNodes = nen
-    print(nElementNodes)
+    # print(nElementNodes)
     if nElementNodes*nDofs != n_element_dofs:
         nDofs = nElementNodes*nDofs - n_element_dofs
         print(
@@ -159,7 +159,7 @@ def solveq(K, f, bcdofs, bcvals):
     """
 
     ndofs = K.shape[0]
-    print(ndofs)
+    # print(ndofs)
     bcdofs = bcdofs - 1
     alldofs = np.arange(ndofs)
     freedofs = np.setdiff1d(alldofs, bcdofs)
