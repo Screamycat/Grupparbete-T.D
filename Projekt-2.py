@@ -81,5 +81,5 @@ for i in range(len(edof)):
     Ke = bar_stiffness_matrix(E_modul, A[i], ex, ey)  # Beräkna stångens styvhetsmatris
     K = assem(edof[i], K, Ke)  # Montera in i globala styvhetsmatrisen
 
-plt.plot(coords[:, 0], coords[:, 1], 'o')
+eldraw2(*coordxtr(edof, coords, dofs), width=1, color="black")
 plt.show()
