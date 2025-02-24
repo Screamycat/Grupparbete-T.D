@@ -9,7 +9,7 @@ from utils import *
 E_modul = 210e9  # [Pa]
 sigma_s = 230e6  # [Pa]
 L = 2  # [m]
-A_0 = 78.5e-4  # [m^2]
+A_0 = 78.5e-3  # [m^2]
 A_Large = 2 * A_0
 P = 150e3  # [N]
 
@@ -90,7 +90,7 @@ print("Knutförskjutningar: ", a, "[m]")
 Ed = extract_eldisp(edof, a)
 Ex, Ey = coordxtr(edof, coords, dofs)
 
-sfac = 1
+sfac = 10000
 plt.figure()
 eldraw2(Ex, Ey, width=1, color="black")
 eldisp2(Ex, Ey, Ed, sfac=sfac, width=1, color="r")
