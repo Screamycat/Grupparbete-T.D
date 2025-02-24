@@ -90,7 +90,7 @@ print("Knutförskjutningar: ", a, "[m]")
 Ed = extract_eldisp(edof, a)
 Ex, Ey = coordxtr(edof, coords, dofs)
 
-sfac = 10000
+sfac = 1000
 plt.figure()
 eldraw2(Ex, Ey, width=1, color="black")
 eldisp2(Ex, Ey, Ed, sfac=sfac, width=1, color="r")
