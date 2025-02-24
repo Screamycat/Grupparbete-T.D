@@ -9,7 +9,7 @@ from utils import *
 E_modul = 210e9  # [Pa]
 sigma_s = 230e6  # [Pa]
 L = 2  # [m]
-A_0 = 78.5e-1  # [m^2]
+A_0 = 78.5e-4  # [m^2]
 A_Large = 2 * A_0
 P = 150e3  # [N]
 
@@ -84,6 +84,9 @@ print("")
 print("Uppgift 2:")
 print("Knutförskjutningar: ", a, "[m]")
 
+
+# 3
+# Beräkna stångkrafter och spänningar
 Ed = extract_eldisp(edof, a)
 Ex, Ey = coordxtr(edof, coords, dofs)
 
@@ -115,43 +118,29 @@ print("\nStång med lägst spänning: Stång", stång_med_min_sigma + 1, "med sp
 print("Stång med högst spänning: Stång", stång_med_max_sigma + 1, "med spänning", sigma_sorted[-1], "[Pa]")
 
 # 4.
+# Visualisering
 plt.figure()
-
-sigma_tryck = sigma[sigma < 0]
-sigma_drag = sigma[sigma > 0]
-
-norm_tryck = mcolors.Normalize(vmin=np.min(sigma_tryck), vmax=0) if len(sigma_tryck) > 0 else None
-norm_drag = mcolors.Normalize(vmin=0, vmax=np.max(sigma_drag)) if len(sigma_drag) > 0 else None
 
 for i in range(len(sigma)):
     x_vals = [Ex[i, 0], Ex[i, 1]]
     y_vals = [Ey[i, 0], Ey[i, 1]]
 
     if sigma[i] < 0:
-        color = cm.Reds(norm_tryck(sigma[i])) if norm_tryck else "black"
+        plt.plot(x_vals, y_vals, 'r', linewidth=2)  # Tryck: Rött
     elif sigma[i] > 0:
-        color = cm.Blues(norm_drag(sigma[i])) if norm_drag else "black"
+        plt.plot(x_vals, y_vals, 'b', linewidth=2)  # Drag: Blått
     else:
-        color = "black"  
-
-    plt.plot(x_vals, y_vals, color=color, linewidth=2)
+        plt.plot(x_vals, y_vals, 'k', linewidth=2)  # Nollkraft: Svart
 
 plt.xlabel("X-koordinater")
 plt.ylabel("Y-koordinater")
-plt.title("Gradientfärger för tryck (röd) och drag (blå)")
-
-# Skapa färgskala
-if norm_tryck is not None or norm_drag is not None:
-    fig, ax = plt.subplots()
-    sm = cm.ScalarMappable(cmap="Reds" if norm_tryck is not None else "Blues", norm=norm_tryck if norm_tryck is not None else norm_drag)
-    sm.set_array([])  
-    cbar = plt.colorbar(sm, ax=ax, label="Spänning [Pa]")
-    plt.grid()
-    plt.axis('equal')
-    plt.show()
+plt.title("Stänger med tryck (röd), drag (blå) och nollkraft (svart)")
+plt.axis("equal")
+plt.show()
 
 
 # 5.
+# Visualisering
 P_max = math.inf
 for i in range(len(A)):
     local_p = sigma_s * A[i]
