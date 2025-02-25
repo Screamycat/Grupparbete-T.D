@@ -30,53 +30,27 @@ W_tot = W_d + W_s + W_t  # Total linjelast [N/m]
 P_b = P / 2  # Punktlast per balk
 
 
-tol = 1e-10  # Tolerans
 # GC4
 # --- Reaktionskrafter ---
-RB = P_b * eta + L/2 * (W_d + W_s) + W_t * omega * (L - omega * L / 2)
-RA = P_b + L * (W_d + W_s + W_t * omega) - RB
-
-V_f = RA + RB - P_b - W_d*L - W_s*L - W_t*L*omega
-B_m = RA*L - P_b*L*(1-eta) - W_d*L**2/2 - W_s*L**2/2 - W_t*(L*omega)**2/2
-print(f"\nVertikalkraft: {V_f} N")
-print(f"Böjmoment: {B_m} Nm")
-
-if V_f < tol and B_m < tol:
-    print("\nBalken är i global jämvikt.")
-else:
-    print(f"\nBalken är inte i global jämvikt. Vertikalkraften är {V_f} N och böjmomentet är {B_m} Nm.")
+RA = P_b * (1 - eta) + L/2 * (W_d + W_s + W_t * omega)
+RB = P_b * eta + L/2 * (W_d + W_s) + W_t * (L - omega * L / 2)
 
 # --- Snittkrafter ---
 x = np.linspace(0, L, 1000)  # Balkens längdindelning
-def T(x):
-    if 0 <= x < eta*L:
-        return (W_d + W_s) * x - RA
-    elif eta*L < x < L - omega*L:
-        return P_b + (W_d + W_s) * x - RA
-    elif L - omega*L < x <= L:
-        return P_b + (W_d + W_s) * x + W_t*(x + omega*L - L) - RA
-    
-def M(x):
-    if 0 <= x < eta*L:
-        return (W_d + W_s) * x**2 / 2 - RA * x
-    elif eta*L < x < L - omega*L:
-        return P_b * (x - eta*L) + (W_d + W_s) * x**2 / 2 - RA * x
-    elif L - omega*L < x <= L:
-        return P_b * (x - eta*L) + (W_d + W_s) * x**2 / 2 + W_t * (x + omega*L - L)**2 / 2 - RA * x
+T_x = RA - W_tot * x
+M_x = RA * x - (W_tot * x**2) / 2
 
-T_x = np.array([T(xi) for xi in x])
-M_x = np.array([M(xi) for xi in x])
-
-print(f"\nMaximal kraft: {T(14.45)} N")
+# Punktlastens bidrag till momentet
+M_x[x >= L/2] -= P_b * (x[x >= L/2] - L/2)
 
 # Hitta max böjmoment
-M_max = np.min(M_x) 
-x_Mmax = x[np.argmin(M_x)]  # x-koordinat där max moment uppstår
+M_max = np.max(M_x)
+x_Mmax = x[np.argmax(M_x)]  # x-koordinat där max moment uppstår
 
 # --- Plotta snittkraftsdiagram ---
 plt.figure(figsize=(10,5))
 plt.subplot(2,1,1)
-plt.plot(x, T_x, label="Tvärkraft T(x)")
+plt.plot(x, T_x * 10**-3, label="Tvärkraft T(x)")
 plt.axhline(0, color='black', linestyle='--')
 plt.xlabel("x [m]")
 plt.ylabel("T [kN]")
@@ -94,7 +68,7 @@ plt.grid()
 plt.tight_layout()
 plt.show()
 
-print(f"\nMaximalt böjmoment: {M_max:.2f} Nm vid x = {x_Mmax:.2f} m")
+print(f"Maximalt böjmoment: {M_max:.2f} Nm vid x = {x_Mmax:.2f} m")
 
 
 # GC5: 
@@ -102,17 +76,17 @@ print(f"\nMaximalt böjmoment: {M_max:.2f} Nm vid x = {x_Mmax:.2f} m")
 A_f = b_f * h_f  # Flänsarea
 d = (h_l / 2) + (h_f / 2)  # Avstånd från neutralaxeln till flänscentrum
 I = 2 * ((b_f * h_f**3) / 12 + A_f * d**2) + (b_l * h_l**3) / 12
-print(f"\nYttröghetsmoment I: {I:.6f} m^4")
+print(f"Yttröghetsmoment I: {I:.6f} m^4")
 
 # --- Normalspänningsberäkning ---
 z_max = h_l/2 + h_f  # Överkanten av balken
 z_min = -(h_l/2 + h_f)  # Underkanten av balken
 
-sigma_max_drag = (M_max * z_min) / I
-sigma_max_tryck = (M_max * z_max) / I
+sigma_max_drag = (M_max * z_max) / I
+sigma_max_tryck = (M_max * z_min) / I
 
-print(f"\nMaximal dragspänning: {sigma_max_drag / 1e6:.2f} MPa vid (x={x_Mmax:.2f} m, y=0, z={z_min:.3f} m)")
-print(f"Maximal tryckspänning: {sigma_max_tryck / 1e6:.2f} MPa vid (x={x_Mmax:.2f} m, y=0, z={z_max:.3f} m)")
+print(f"Maximal dragspänning: {sigma_max_drag / 1e6:.2f} MPa vid (x={x_Mmax:.2f} m, y=0, z={z_max:.3f} m)")
+print(f"Maximal tryckspänning: {sigma_max_tryck / 1e6:.2f} MPa vid (x={x_Mmax:.2f} m, y=0, z={z_min:.3f} m)")
 
 # --- Plotta normalspänningen ---
 z_vals = np.linspace(z_min, z_max, 100)  # Höjd över tvärsnittet
@@ -130,6 +104,6 @@ plt.show()
 
 # --- Jämförelse med flytgräns ---
 if max(abs(sigma_max_drag), abs(sigma_max_tryck)) / 1e6 > sigma_y:
-    print("\nBRO PLASTICERAR! Maxspänningen överskrider flytgränsen.")
+    print("BRO PLASTICERAR! Maxspänningen överskrider flytgränsen.")
 else:
-    print("\nBron klarar belastningen utan att plasticera.")
+    print("Bron klarar belastningen utan att plasticera.")

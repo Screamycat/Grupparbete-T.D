@@ -6,12 +6,14 @@ import math
 from utils import *
 
 # Given data
-E_modul = 210e9  # [Pa]
-sigma_s = 230e6  # [Pa]
-L = 2  # [m]
-A_0 = 78.5e-3  # [m^2]
-A_Large = 2 * A_0
-P = 150e3  # [N]
+E_modul = 210.0*10**9  # [Pa]
+sigma_s = 230.0*10**6  # [Pa]
+L = 2.0  # [m]
+A_0 = 0.00785  # [m^2]
+A_Large = 2.0 * A_0
+P = 150000.0  # [N]
+
+np.set_printoptions(suppress=True, precision=6)  # Ingen e-notation
 
 # 1.
 # Numrera noder och frihetsgrader
@@ -48,10 +50,9 @@ edof = np.array([
 ])
 
 # 2.
-ndofs = np.max(edof)  
-K = np.zeros((ndofs, ndofs))  
-f = np.zeros(ndofs)  
-u = np.zeros(ndofs)  
+ndofs = np.max(edof)
+K = np.zeros((ndofs, ndofs))
+f = np.zeros(ndofs)
 
 f[9] = -P 
 
@@ -70,12 +71,14 @@ def bar_stiffness_matrix(E, A, ex, ey):
     ])
     return k_local
 
+
 for i in range(len(edof)):
     ex, ey = coordxtr(edof[i].reshape(1, -1), coords, dofs)  
     ex, ey = ex.flatten(), ey.flatten()
 
     Ke = bar_stiffness_matrix(E_modul, A[i], ex, ey)  
     K = assem(edof[i], K, Ke)  
+
 
 bcdofs = np.array([1, 2, 3, 4])
 bcvals = np.zeros(len(bcdofs))
@@ -84,15 +87,14 @@ print("")
 print("Uppgift 2:")
 print("Knutförskjutningar: ", a, "[m]")
 
-
 # 3
 # Beräkna stångkrafter och spänningar
 Ed = extract_eldisp(edof, a)
 Ex, Ey = coordxtr(edof, coords, dofs)
 
-sfac = 1000
+sfac = 100
 plt.figure()
-eldraw2(Ex, Ey, width=1, color="black")
+eldraw2(Ex, Ey, width=1, color="k")
 eldisp2(Ex, Ey, Ed, sfac=sfac, width=1, color="r")
 plt.show()
 
