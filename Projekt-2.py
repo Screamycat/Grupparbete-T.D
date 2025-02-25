@@ -112,7 +112,7 @@ stång_med_min_sigma = sorted_indices[0]
 stång_med_max_sigma = sorted_indices[-1]  
 
 print("\nUppgift 3:")
-print("Stångkrafter:", N, "[Pa]")
+print("Stångkrafter:", N, "[N]")
 print("Spänningar:", sigma, "[Pa]")
 print("\nStång med lägst spänning: Stång", stång_med_min_sigma + 1, "med spänning", sigma_sorted[0], "[Pa]")
 print("Stång med högst spänning: Stång", stång_med_max_sigma + 1, "med spänning", sigma_sorted[-1], "[Pa]")
