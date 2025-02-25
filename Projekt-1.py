@@ -31,6 +31,7 @@ W_t = w_t * b / 2  # [N/m]
 W_tot = W_d + W_s + W_t  # Total linjelast [N/m]
 P_b = P / 2  # Punktlast per balk
 
+# GC4
 # --- Reaktionskrafter ---
 RB = P_b * eta + (W_tot * L) / 2
 RA = P_b * (1.0 - eta) + (W_tot * L) / 2
@@ -45,7 +46,7 @@ M_x[x >= L/2] -= P_b * (x[x >= L/2] - L/2)
 
 # Hitta max böjmoment
 M_max = np.max(M_x)
-x_Mmax = x[np.argmax(M_x)]
+x_Mmax = x[np.argmax(M_x)]  # x-koordinat där max moment uppstår
 
 # --- Plotta snittkraftsdiagram ---
 plt.figure(figsize=(10,5))
@@ -70,22 +71,29 @@ plt.show()
 
 print(f"Maximalt böjmoment: {M_max:.2f} Nm vid x = {x_Mmax:.2f} m")
 
-
-# --- GC5: Yttröghetsmoment ---
-A_f = b_f * h_f  # Korrigerad area av fläns
+# GC5: 
+# --- Yttröghetsmoment ---
+A_f = b_f * h_f  # Flänsarea
 d = (h_l / 2) + (h_f / 2)  # Avstånd från neutralaxeln till flänscentrum
-
 I = 2 * ((b_f * h_f**3) / 12 + A_f * d**2) + (b_l * h_l**3) / 12
-
 print(f"Yttröghetsmoment I: {I:.6f} m^4")
 
 # --- Normalspänningsberäkning ---
-z_vals = np.linspace(-h_l/2 - h_f, h_l/2 + h_f, 100)  # Höjd över tvärsnittet
-sigma_vals = (M_max * z_vals) / I  # Normalspänning
+z_max = h_l/2 + h_f  # Överkanten av balken (max dragspänning)
+z_min = -(h_l/2 + h_f)  # Underkanten av balken (max tryckspänning)
+
+sigma_max_drag = (M_max * z_max) / I
+sigma_max_tryck = (M_max * z_min) / I
+
+print(f"Maximal dragspänning: {sigma_max_drag / 1e6:.2f} MPa vid (x={x_Mmax:.2f} m, y=0, z={z_max:.3f} m)")
+print(f"Maximal tryckspänning: {sigma_max_tryck / 1e6:.2f} MPa vid (x={x_Mmax:.2f} m, y=0, z={z_min:.3f} m)")
 
 # --- Plotta normalspänningen ---
+z_vals = np.linspace(z_min, z_max, 100)  # Höjd över tvärsnittet
+sigma_vals = (M_max * z_vals) / I  # Normalspänning
+
 plt.figure(figsize=(6, 8))
-plt.plot(sigma_vals / 1e6, z_vals * 1e3, label="Normalspänning")
+plt.plot(sigma_vals / 1e6, z_vals * 1e3, label="Normalspänning σ(z)")
 plt.axhline(0, color="black", linestyle="--", linewidth=1)
 plt.xlabel("Spänning (MPa)")
 plt.ylabel("Höjd över tvärsnitt (mm)")
@@ -94,12 +102,8 @@ plt.legend()
 plt.grid()
 plt.show()
 
-# --- Max drag- och tryckspänning ---
-sigma_max = (M_max * (h_l/2 + h_f)) / I
-print(f"Maximal normalspänning: {sigma_max / 1e6:.2f} MPa")
-
 # --- Jämförelse med flytgräns ---
-if sigma_max / 1e6 > sigma_y:
+if max(abs(sigma_max_drag), abs(sigma_max_tryck)) / 1e6 > sigma_y:
     print("BRO PLASTICERAR! Maxspänningen överskrider flytgränsen.")
 else:
     print("Bron klarar belastningen utan att plasticera.")
