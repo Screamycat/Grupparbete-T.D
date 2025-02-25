@@ -9,23 +9,21 @@ b_l = 10e-3  # Livbredd
 L = 14.45  # Balkens längd
 b = 4.095  # Brobredd
 h = 125e-3  # Träskiva höjd
-
 # --- Laster ---
 w_s = 1.5e3  # Snölast [N/m^2]
 w_t = 3.0e3  # Trängsellast [N/m^2]
 P = 30e3  # Punktlast [N]
 eta = 0.31
 omega = 0.52
-
 # --- Material ---
 densitet_stål = 78e3  # [N/m^3]
 densitet_trä = 6.6e3  # [N/m^3]
 E_modul = 210e9  # Elasticitetsmodul [Pa]
 sigma_y = 200e6  # Flytgräns [Pa]
 alpha_stål = 1.2e-5  # Temperaturutvidgning [1/°C]
-
 # --- Lastberäkningar ---
-W_d = (2 * h_f * b_f + b_l * h_l) * densitet_stål + b * h * densitet_trä  # [N/m]
+W_d = 2 * (2 * h_f * b_f + b_l * h_l) * densitet_stål + b * h * densitet_trä  # [N/m]
+W_d = W_d / 2 # Beräkna per balk
 W_s = w_s * b / 2  # [N/m]
 W_t = w_t * b / 2  # [N/m]
 W_tot = W_d + W_s + W_t  # Total linjelast [N/m]
@@ -51,18 +49,18 @@ x_Mmax = x[np.argmax(M_x)]  # x-koordinat där max moment uppstår
 # --- Plotta snittkraftsdiagram ---
 plt.figure(figsize=(10,5))
 plt.subplot(2,1,1)
-plt.plot(x, T_x, label="Tvärkraft T(x)")
+plt.plot(x, T_x * 10**-3, label="Tvärkraft T(x)")
 plt.axhline(0, color='black', linestyle='--')
 plt.xlabel("x [m]")
-plt.ylabel("T [N]")
+plt.ylabel("T [kN]")
 plt.legend()
 plt.grid()
 
 plt.subplot(2,1,2)
-plt.plot(x, M_x, label="Böjmoment M(x)", color='r')
+plt.plot(x, M_x * 10**-3, label="Böjmoment M(x)", color='r')
 plt.axhline(0, color='black', linestyle='--')
 plt.xlabel("x [m]")
-plt.ylabel("M [Nm]")
+plt.ylabel("M [kNm]")
 plt.legend()
 plt.grid()
 
@@ -70,6 +68,7 @@ plt.tight_layout()
 plt.show()
 
 print(f"Maximalt böjmoment: {M_max:.2f} Nm vid x = {x_Mmax:.2f} m")
+
 
 # GC5: 
 # --- Yttröghetsmoment ---
@@ -79,8 +78,8 @@ I = 2 * ((b_f * h_f**3) / 12 + A_f * d**2) + (b_l * h_l**3) / 12
 print(f"Yttröghetsmoment I: {I:.6f} m^4")
 
 # --- Normalspänningsberäkning ---
-z_max = h_l/2 + h_f  # Överkanten av balken (max dragspänning)
-z_min = -(h_l/2 + h_f)  # Underkanten av balken (max tryckspänning)
+z_max = h_l/2 + h_f  # Överkanten av balken
+z_min = -(h_l/2 + h_f)  # Underkanten av balken
 
 sigma_max_drag = (M_max * z_max) / I
 sigma_max_tryck = (M_max * z_min) / I
