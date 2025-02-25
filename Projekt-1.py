@@ -32,13 +32,8 @@ P_b = P / 2  # Punktlast per balk
 
 # GC4
 # --- Reaktionskrafter ---
-# RB = P_b * eta + (W_tot * L) / 2
-# RA = P_b * (1.0 - eta) + (W_tot * L) / 2
-
 RA = P_b * (1 - eta) + L/2 * (W_d + W_s + W_t * omega)
 RB = P_b * eta + L/2 * (W_d + W_s) + W_t * (L - omega * L / 2)
-print(f"RA: {RA:.2f} N")
-print(f"RB: {RB:.2f} N")
 
 # --- Snittkrafter ---
 x = np.linspace(0, L, 1000)  # Balkens längdindelning
