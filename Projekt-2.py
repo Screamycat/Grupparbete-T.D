@@ -2,7 +2,6 @@
 # Authors: Tobias Ericsson, David Neidhart  |
 # Date: 2025-02-26                          |
 # Course Code: MTM021                       |
-#                                           |
 # -------------------------------------------
 # Program that calculates the displacement, stresses and forces in a truss structure.
 
@@ -22,7 +21,7 @@ A_Large = 2.0 * A_0
 P = 150e3  # [N]
 
 # 1.
-# Numrera noder och frihetsgrader
+# --- Numrera noder och frihetsgrader ---
 # Nodernas koordinater
 coords = np.array([
     [0, 0],         # Node 1
@@ -60,7 +59,7 @@ edof = np.array([
 
 
 # 2.
-# Beräkna förskjutningar
+# --- Beräkna förskjutningar ---
 ndofs = np.max(dofs)            # Antal frihetsgrader
 K = np.zeros((ndofs, ndofs))    # Styvghetsmatris
 f = np.zeros(ndofs)             # Kraftvektor
@@ -98,53 +97,58 @@ for i in range(len(edof)):
 bcdofs = np.array([1, 2, 3, 4])         # Noder med Dirichlet-villkor
 bcvals = np.zeros(len(bcdofs))          # Dirichlet-villkor
 a, Q = solveq(K, f, bcdofs, bcvals)     # Beräknar förskjutningar och krafter
+
 print("\nUppgift 2:")
-a_reshaped = [a[i : i + 2] for i in range(0, len(a), 2)]
-print("Knutförskjutningar:\n", tabulate(a_reshaped, tablefmt="grid"), "[m]")
+a_reshaped = [a[i : i + 2] for i in range(0, len(a), 2)]                        # Reshape av förskjutningarna
+print("Knutförskjutningar:\n", tabulate(a_reshaped, tablefmt="grid"), "[m]")    # Skriver ut förskjutningarna
 
 # 3
-# Beräkna stångkrafter och spänningar
-Ed = extract_eldisp(edof, a)
-Ex, Ey = coordxtr(edof, coords, dofs)
+# --- Beräkna stångkrafter och spänningar ---
+Ed = extract_eldisp(edof, a)            # Förskjutningar för varje stång
+Ex, Ey = coordxtr(edof, coords, dofs)   # Globala Koordinater för varje stång
 
-sfac = 100
+sfac = 1000     # Skalfaktor för att förstora förskjutningarna
 plt.figure()
 plt.xlabel("X-koordinater")
 plt.ylabel("Y-koordinater")
 plt.title("Stänger med respektive spänning")
-eldraw2(Ex, Ey, width=1, color="k")
-eldisp2(Ex, Ey, Ed, sfac=sfac, width=1, color="r")
+eldraw2(Ex, Ey, width=1, color="k")                 # Ritar ut stängerna oberoende av krafter
+eldisp2(Ex, Ey, Ed, sfac=sfac, width=1, color="r")  # Ritar ut stängerna med förskjutningar
 plt.show()
 
-nel =  len(edof)
-N = np.zeros(nel)
+nel =  len(edof)    # Antal element
+N = np.zeros(nel)   # Stångkrafter
 
+# Beräknar stångkrafterna
 for el in range(nel):
     N[el] = bar2s(Ex[el], Ey[el], [E_modul, A[el]], Ed[el])
 
+# Beräknar spänningarna
 spänningar = N / A  
 
-sorted_indices = np.argsort(spänningar)
-N_sorted = N[sorted_indices]
-sigma_sorted = spänningar[sorted_indices]
+sorted_indices = np.argsort(spänningar)     # Sorterar stångarna efter spänning
+N_sorted = N[sorted_indices]                # Stångkrafterna för de sorterade stängerna
+spänn_sorted = spänningar[sorted_indices]   # Spänningarna för de sorterade stängerna
 
-stång_med_min_sigma = sorted_indices[0]  
-stång_med_max_sigma = sorted_indices[-1]  
+stång_med_min_spänn = sorted_indices[0]     # Stång med lägst spänning
+stång_med_max_spänn = sorted_indices[-1]    # Stång med högst spänning
 
 print("\nUppgift 3:")
 print("Stångkrafter:", N, "[N]")
 print("Spänningar:", spänningar, "[Pa]")
-print("\nStång med lägst spänning: Stång", stång_med_min_sigma + 1, "med spänning", sigma_sorted[0], "[Pa]")
-print("Stång med högst spänning: Stång", stång_med_max_sigma + 1, "med spänning", sigma_sorted[-1], "[Pa]")
+print("\nStång med lägst spänning: Stång", stång_med_min_spänn + 1, "med spänning", spänn_sorted[0], "[Pa]")
+print("Stång med högst spänning: Stång", stång_med_max_spänn + 1, "med spänning", spänn_sorted[-1], "[Pa]")
 
 # 4.
 # Visualisering
 plt.figure()
 
+# Ritar ut stängerna med respektive spänning
 for i in range(len(spänningar)):
-    x_vals = [Ex[i, 0], Ex[i, 1]]
-    y_vals = [Ey[i, 0], Ey[i, 1]]
+    x_vals = [Ex[i, 0], Ex[i, 1]]   # x-koordinater för stången
+    y_vals = [Ey[i, 0], Ey[i, 1]]   # y-koordinater för stången
 
+    # Färgkodning av stångarna
     if spänningar[i] < 0:
         plt.plot(x_vals, y_vals, 'r', linewidth=2)  # Tryck: Rött
     elif spänningar[i] > 0:
@@ -160,25 +164,10 @@ plt.show()
 
 
 # 5.
-P_N = N.copy()
-A_N = N.copy()
-P_Max = P
-
-while np.all(np.abs(P_N) / A < sigma_s):
-    f = np.zeros(ndofs)
-
-    f[9] = -P_Max
-
-    a, Q = solveq(K, f, bcdofs, bcvals)
-    Ed = extract_eldisp(edof, a)
-    for el in range(nel):
-        P_N[el] = bar2s(Ex[el], Ey[el], [E_modul, A[el]], Ed[el])
-
-    P_Max += 100
-
-
-A_min = np.max(np.abs(N)) / sigma_s
+# Beräkna maximala tillåtna kraften och minimala tillåtna arean
+P_Max = P / (np.max(np.abs(spänningar)) / sigma_s)  # Maximala tillåtna kraften
+A_min = np.max(np.abs(N)) / sigma_s                 # Minsta tillåtna area
 
 print("\nUppgift 5:")
-print("Maximala tillåtna kraften: ", P_Max * 10**-3, "[kN]")
+print(f"Maximala tillåtna kraften: {(P_Max * 10**-3):.2f} [kN]")
 print(f"Minimala tillåtna arean: {(A_min * 10**4 ):.2f} [cm2]")
