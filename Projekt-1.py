@@ -67,7 +67,7 @@ def M(x):
 T_x = np.array([T(xi) for xi in x])
 M_x = np.array([M(xi) for xi in x])
 
-print(f"\nMaximal kraft: {T(14.45)} N")
+print(f"\nMaximal kraft: {np.max(T_x)} N")
 
 # Hitta max böjmoment
 M_max = np.min(M_x) 
@@ -76,7 +76,7 @@ x_Mmax = x[np.argmin(M_x)]  # x-koordinat där max moment uppstår
 # --- Plotta snittkraftsdiagram ---
 plt.figure(figsize=(10,5))
 plt.subplot(2,1,1)
-plt.plot(x, T_x, label="Tvärkraft T(x)")
+plt.plot(x, T_x *10**-3, label="Tvärkraft T(x)")
 plt.axhline(0, color='black', linestyle='--')
 plt.xlabel("x [m]")
 plt.ylabel("T [kN]")
