@@ -1,24 +1,27 @@
 # -------------------------------------------
-# Authors: Tobias Ericsson, David Neidhart  |
-# Date: 2025-02-26                          |
+# Authors: Tobias Ericsson, David Neinhardt  |
+# Date: 2025-02-27                          |
 # Course Code: MTM021                       |
 # -------------------------------------------
-# Program that calculates the displacement, stresses and forces in a truss structure.
+# Program som beräknar förskjutningar, stångkrafter och spänningar i en konstruktion
 
-import matplotlib.pyplot as plt
-import numpy as np
 from utils import *
 from tabulate import tabulate
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 
-# Given data
+# Skapar en figur med två horisontella subplots
+fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+
+# --- Given data ---
 E_modul = 210.0e9  # [Pa]
 sigma_s = 230.0e6  # [Pa]
 L = 2.0  # [m]
 A_0 = 78.5e-4  # [m^2]
 A_Large = 2.0 * A_0
-P = 150e3  # [N]
+P = 150.0e3  # [N]
 
 # 1.
 # --- Numrera noder och frihetsgrader ---
@@ -61,22 +64,22 @@ edof = np.array([
 # 2.
 # --- Beräkna förskjutningar ---
 ndofs = np.max(dofs)            # Antal frihetsgrader
-K = np.zeros((ndofs, ndofs))    # Styvghetsmatris
+K = np.zeros((ndofs, ndofs))    # Styvhetsmatris
 f = np.zeros(ndofs)             # Kraftvektor
 
-# Ansätter kraften P i nod 8
+# Ansätter kraften P i nod 10
 f[9] = -P 
 
 # Areavektor för varje stång, där stång 4, 6 och 9 har dubbel area
 A = np.array([A_0, A_0, A_0, A_Large, A_0, A_Large, A_0, A_0, A_Large, A_0, A_0])
 
-# Beräknar en lokal styvghetsmatris för en stång
+# Beräknar en lokal styvhetsmatris för en stång
 def bar_stiffness_matrix(E, A, ex, ey):
     L = np.sqrt((ex[1] - ex[0]) ** 2 + (ey[1] - ey[0]) ** 2)    # Hypotenusan för en stång
     C = (ex[1] - ex[0]) / L                                     # cosinus
     S = (ey[1] - ey[0]) / L                                     # sinus
 
-    # Lokal styvghetsmatris
+    # Lokal styvhetsmatris
     k_local = (E * A / L) * np.array([
         [ C**2,  C*S, -C**2, -C*S],
         [ C*S,  S**2, -C*S, -S**2],
@@ -85,12 +88,12 @@ def bar_stiffness_matrix(E, A, ex, ey):
     ])
     return k_local
 
-# Beräknar den globala styvghetsmatrisen
+# Beräknar den globala styvhetsmatrisen
 for i in range(len(edof)):
     ex, ey = coordxtr(edof[i].reshape(1, -1), coords, dofs) # Koordinater för stången
     ex, ey = ex.flatten(), ey.flatten()                     # Omvandlar till 1D-array
 
-    Ke = bar_stiffness_matrix(E_modul, A[i], ex, ey)        # Lokala styvghetsmatrisen
+    Ke = bar_stiffness_matrix(E_modul, A[i], ex, ey)        # Lokala styvhetsmatrisen
     K = assem(edof[i], K, Ke)                               # Assemblerar den globala styvghetsmatrisen
 
 
@@ -98,23 +101,20 @@ bcdofs = np.array([1, 2, 3, 4])         # Noder med Dirichlet-villkor
 bcvals = np.zeros(len(bcdofs))          # Dirichlet-villkor
 a, Q = solveq(K, f, bcdofs, bcvals)     # Beräknar förskjutningar och krafter
 
-print("\nUppgift 2:")
-a_reshaped = [a[i : i + 2] for i in range(0, len(a), 2)]                        # Reshape av förskjutningarna
-print("Knutförskjutningar:\n", tabulate(a_reshaped, tablefmt="grid"), "[m]")    # Skriver ut förskjutningarna
 
 # 3
 # --- Beräkna stångkrafter och spänningar ---
 Ed = extract_eldisp(edof, a)            # Förskjutningar för varje stång
 Ex, Ey = coordxtr(edof, coords, dofs)   # Globala Koordinater för varje stång
+sfac = 100     # Skalfaktor för att förstora förskjutningarna
 
-sfac = 1000     # Skalfaktor för att förstora förskjutningarna
-plt.figure()
-plt.xlabel("X-koordinater")
-plt.ylabel("Y-koordinater")
-plt.title("Stänger med respektive spänning")
-eldraw2(Ex, Ey, width=1, color="k")                 # Ritar ut stängerna oberoende av krafter
-eldisp2(Ex, Ey, Ed, sfac=sfac, width=1, color="r")  # Ritar ut stängerna med förskjutningar
-plt.show()
+# Första subplot: Förskjutna stänger
+axes[0].set_title("Förskjutna stänger")
+axes[0].set_xlabel("[m]")
+axes[0].set_ylabel("[m]")
+plt.sca(axes[0]) 
+eldraw2(Ex, Ey, width=1, color="k")  # Ursprunglig struktur
+eldisp2(Ex, Ey, Ed, sfac=sfac, width=1, color="r")  # Förskjutningar
 
 nel =  len(edof)    # Antal element
 N = np.zeros(nel)   # Stångkrafter
@@ -133,41 +133,48 @@ spänn_sorted = spänningar[sorted_indices]   # Spänningarna för de sorterade 
 stång_med_min_spänn = sorted_indices[0]     # Stång med lägst spänning
 stång_med_max_spänn = sorted_indices[-1]    # Stång med högst spänning
 
-print("\nUppgift 3:")
-print("Stångkrafter:", N, "[N]")
-print("Spänningar:", spänningar, "[Pa]")
-print("\nStång med lägst spänning: Stång", stång_med_min_spänn + 1, "med spänning", spänn_sorted[0], "[Pa]")
-print("Stång med högst spänning: Stång", stång_med_max_spänn + 1, "med spänning", spänn_sorted[-1], "[Pa]")
 
-# 4.
-# Visualisering
-plt.figure()
-
-# Ritar ut stängerna med respektive spänning
+# 4
+# --- Plottning av konstruktionen ---
+# Ritar ut stängerna med färgkodning
 for i in range(len(spänningar)):
-    x_vals = [Ex[i, 0], Ex[i, 1]]   # x-koordinater för stången
-    y_vals = [Ey[i, 0], Ey[i, 1]]   # y-koordinater för stången
-
-    # Färgkodning av stångarna
+    x_vals = [Ex[i, 0], Ex[i, 1]]  # x-koordinater för stången
+    y_vals = [Ey[i, 0], Ey[i, 1]]  # y-koordinater för stången
+    
     if spänningar[i] < 0:
-        plt.plot(x_vals, y_vals, 'r', linewidth=2)  # Tryck: Rött
+        axes[1].plot(x_vals, y_vals, 'r', linewidth=1)  # Tryck: Rött
     elif spänningar[i] > 0:
-        plt.plot(x_vals, y_vals, 'b', linewidth=2)  # Drag: Blått
+        axes[1].plot(x_vals, y_vals, 'b', linewidth=1)  # Drag: Blått
     else:
-        plt.plot(x_vals, y_vals, 'k', linewidth=2)  # Nollkraft: Svart
+        axes[1].plot(x_vals, y_vals, 'k', linewidth=1)  # Nollkraft: Svart
 
-plt.xlabel("X-koordinater")
-plt.ylabel("Y-koordinater")
-plt.title("Stänger med tryck (röd), drag (blå) och nollkraft (svart)")
-plt.axis("equal")
-plt.show()
+# Andra subplot: Stänger med tryck, drag och nollkraft
+axes[1].set_title("Stänger med tryck (röd), drag (blå) och nollkraft (svart)")
+axes[1].set_xlabel("[m]")
+axes[1].set_ylabel("[m]")
+axes[1].axis("equal")
 
 
 # 5.
-# Beräkna maximala tillåtna kraften och minimala tillåtna arean
+# --- Beräkna maximala tillåtna kraften och minimala tillåtna arean ---
 P_Max = P / (np.max(np.abs(spänningar)) / sigma_s)  # Maximala tillåtna kraften
 A_min = np.max(np.abs(N)) / sigma_s                 # Minsta tillåtna area
 
-print("\nUppgift 5:")
-print(f"Maximala tillåtna kraften: {(P_Max * 10**-3):.2f} [kN]")
-print(f"Minimala tillåtna arean: {(A_min * 10**4 ):.2f} [cm2]")
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------------
+# --- Utskrift av resultat i tabell och plottning ---
+table = [
+    ["Knutförskjutningar", tabulate([[f"{val * 1000:.6f}" for val in a[i:i+2]] for i in range(0, len(a), 2)], tablefmt="grid"), "[mm]"],
+    ["Stångkrafter", tabulate([[i+1, f"{N[i] * 1e-3:.6f}"] for i in range(len(N))], tablefmt="grid"), "[kN]"], 
+    ["Spänningar", tabulate([[i+1, f"{spänningar[i] * 1e-6:.6f}"] for i in range(len(spänningar))], tablefmt="grid"), "[MPa]"], 
+    ["Stång med lägst spänning", f"{stång_med_min_spänn + 1} ——— {spänningar[stång_med_min_spänn] * 1e-6:.6f}", "[MPa]"], 
+    ["Stång med högst spänning", f"{stång_med_max_spänn + 1} ——— {spänningar[stång_med_max_spänn] * 1e-6:.6f}", "[MPa]"],
+    ["Maximala tillåtna kraften", f"{(P_Max * 10**-3):.6f}", "[kN]"],
+    ["Minimala tillåtna arean", f"{(A_min * 10**4):.6f}", "[cm²]"]
+]
+
+print("\nResultat:")
+print(tabulate(table, headers=["Beskrivning", "Värde", "Enhet"], tablefmt="grid"))
+plt.tight_layout()
+plt.show()
