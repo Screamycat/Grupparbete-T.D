@@ -1,5 +1,14 @@
+# -------------------------------------------
+# Authors: Tobias Ericsson, David Neinhardt |
+# Date: 2025-02-27                          |
+# Course Code: MTM021                       |
+# -------------------------------------------
+# Ingenjörsuppgift GC-bro för MTM021
+
 import numpy as np
 import matplotlib.pyplot as plt
+
+
 
 # --- Geometri [m] ---
 h_f = 20e-3  # Flänstjocklek
@@ -30,44 +39,47 @@ W_tot = W_d + W_s + W_t  # Total linjelast [N/m]
 P_b = P / 2  # Punktlast per balk
 
 
-tol = 1e-10  # Tolerans
 # GC4
 # --- Reaktionskrafter ---
-RB = P_b * eta + L/2 * (W_d + W_s) + W_t * omega * (L - omega * L / 2)
-RA = P_b + L * (W_d + W_s + W_t * omega) - RB
+VB = P_b * eta + L/2 * (W_d + W_s) + W_t * omega * (L - omega * L / 2)
+VA = P_b + L * (W_d + W_s + W_t * omega) - VB
 
-V_f = RA + RB - P_b - W_d*L - W_s*L - W_t*L*omega
-B_m = RA*L - P_b*L*(1-eta) - W_d*L**2/2 - W_s*L**2/2 - W_t*(L*omega)**2/2
+V_f = VA + VB - P_b - W_d*L - W_s*L - W_t*L*omega
+B_m = VA*L - P_b*L*(1-eta) - W_d*L**2/2 - W_s*L**2/2 - W_t*(L*omega)**2/2
 print(f"\nVertikalkraft: {V_f} N")
 print(f"Böjmoment: {B_m} Nm")
 
+tol = 1e-10  # Tolerans
 if V_f < tol and B_m < tol:
     print("\nBalken är i global jämvikt.")
 else:
-    print(f"\nBalken är inte i global jämvikt. Vertikalkraften är {V_f} N och böjmomentet är {B_m} Nm.")
+    print(f"\nBalken är INTE i global jämvikt.")
 
 # --- Snittkrafter ---
 x = np.linspace(0, L, 1000)  # Balkens längdindelning
 def T(x):
     if 0 <= x < eta*L:
-        return (W_d + W_s) * x - RA
+        return (W_d + W_s) * x - VA
     elif eta*L < x < L - omega*L:
-        return P_b + (W_d + W_s) * x - RA
+        return P_b + (W_d + W_s) * x - VA
     elif L - omega*L < x <= L:
-        return P_b + (W_d + W_s) * x + W_t*(x + omega*L - L) - RA
+        return P_b + (W_d + W_s) * x + W_t*(x + omega*L - L) - VA
     
 def M(x):
     if 0 <= x < eta*L:
-        return (W_d + W_s) * x**2 / 2 - RA * x
+        return (W_d + W_s) * x**2 / 2 - VA * x
     elif eta*L < x < L - omega*L:
-        return P_b * (x - eta*L) + (W_d + W_s) * x**2 / 2 - RA * x
+        return P_b * (x - eta*L) + (W_d + W_s) * x**2 / 2 - VA * x
     elif L - omega*L < x <= L:
-        return P_b * (x - eta*L) + (W_d + W_s) * x**2 / 2 + W_t * (x + omega*L - L)**2 / 2 - RA * x
+        return P_b * (x - eta*L) + (W_d + W_s) * x**2 / 2 + W_t * (x + omega*L - L)**2 / 2 - VA * x
 
 T_x = np.array([T(xi) for xi in x])
 M_x = np.array([M(xi) for xi in x])
 
-print(f"\nMaximal kraft: {np.max(T_x)} N")
+# --- Maximala snittkrafter och böjmoment ---
+# Hitta max snittkraft
+T_max = np.max(T_x)
+x_Tmax = x[np.argmax(T_x)]  # x-koordinat där max kraft uppstår
 
 # Hitta max böjmoment
 M_max = np.min(M_x) 
@@ -77,6 +89,7 @@ x_Mmax = x[np.argmin(M_x)]  # x-koordinat där max moment uppstår
 plt.figure(figsize=(10,5))
 plt.subplot(2,1,1)
 plt.plot(x, T_x *10**-3, label="Tvärkraft T(x)")
+plt.plot(x_Tmax, T_max * 10**-3, 'ro', label=f"Maximal snittkraft: {T_max:.2f} N")
 plt.axhline(0, color='black', linestyle='--')
 plt.xlabel("x [m]")
 plt.ylabel("T [kN]")
@@ -85,6 +98,7 @@ plt.grid()
 
 plt.subplot(2,1,2)
 plt.plot(x, M_x * 10**-3, label="Böjmoment M(x)", color='r')
+plt.plot(x_Mmax, M_max * 10**-3, 'bo', label=f"Maximalt böjmoment: {M_max:.2f} Nm")
 plt.axhline(0, color='black', linestyle='--')
 plt.xlabel("x [m]")
 plt.ylabel("M [kNm]")
@@ -94,7 +108,8 @@ plt.grid()
 plt.tight_layout()
 plt.show()
 
-print(f"\nMaximalt böjmoment: {M_max:.2f} Nm vid x = {x_Mmax:.2f} m")
+print(f"\nMaximal snittkraft: {T_max:.2f} N vid x = {x_Tmax:.2f} m")
+print(f"Maximalt böjmoment: {M_max:.2f} Nm vid x = {x_Mmax:.2f} m")
 
 
 # GC5: 
@@ -120,6 +135,8 @@ sigma_vals = (M_max * z_vals) / I  # Normalspänning
 
 plt.figure(figsize=(6, 8))
 plt.plot(sigma_vals / 1e6, z_vals * 1e3, label="Normalspänning σ(z)")
+plt.plot(sigma_max_drag / 1e6, z_min * 1e3, 'bo', label=f"Maximal dragspänning: {sigma_max_drag / 1e6:.2f} MPa")
+plt.plot(sigma_max_tryck / 1e6, z_max * 1e3, 'bo', label=f"Maximal tryckspänning: {sigma_max_tryck / 1e6:.2f} MPa")
 plt.axhline(0, color="black", linestyle="--", linewidth=1)
 plt.xlabel("Spänning (MPa)")
 plt.ylabel("Höjd över tvärsnitt (mm)")

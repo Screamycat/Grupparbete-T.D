@@ -1,5 +1,5 @@
 # -------------------------------------------
-# Authors: Tobias Ericsson, David Neinhardt  |
+# Authors: Tobias Ericsson, David Neinhardt |
 # Date: 2025-02-27                          |
 # Course Code: MTM021                       |
 # -------------------------------------------
