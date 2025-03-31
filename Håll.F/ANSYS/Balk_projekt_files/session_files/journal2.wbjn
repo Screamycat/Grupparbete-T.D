@@ -2,5 +2,5 @@
 # 2025 R1
 SetScriptVersion(Version="25.1.122")
 system1 = GetSystem(Name="SYS")
-model1 = system1.GetContainer(ComponentName="Model")
-model1.Edit()
+results1 = system1.GetContainer(ComponentName="Results")
+results1.Edit()
