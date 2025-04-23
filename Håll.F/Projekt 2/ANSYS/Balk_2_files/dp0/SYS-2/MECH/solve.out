@@ -114,13 +114,13 @@
   DISTRIBUTED MEMORY PARALLEL REQUESTED
        4 PARALLEL PROCESSES REQUESTED WITH SINGLE THREAD PER PROCESS
     TOTAL OF     4 CORES REQUESTED
-  INPUT FILE NAME              = C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt 2\ANSYS\_ProjectScratch\ScrE6D5\dummy.dat
-  OUTPUT FILE NAME             = C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt 2\ANSYS\_ProjectScratch\ScrE6D5\solve.out
+  INPUT FILE NAME              = C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt 2\ANSYS\_ProjectScratch\ScrCEB7\dummy.dat
+  OUTPUT FILE NAME             = C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt 2\ANSYS\_ProjectScratch\ScrCEB7\solve.out
   START-UP FILE MODE           = NOREAD
   STOP FILE MODE               = NOREAD
 
  RELEASE= 2024 R1              BUILD= 24.1      UP20231106   VERSION=WINDOWS x64 
- CURRENT JOBNAME=file0  14:56:14  APR 23, 2025 CP=      0.047
+ CURRENT JOBNAME=file0  15:03:04  APR 23, 2025 CP=      0.062
 
 
  PARAMETER _DS_PROGRESS =     999.0000000    
@@ -129,15 +129,15 @@
 
 
 
- *** NOTE ***                            CP =       0.125   TIME= 14:56:15
+ *** NOTE ***                            CP =       0.141   TIME= 15:03:04
  The /CONFIG,NOELDB command is not valid in a distributed memory         
  parallel solution.  Command is ignored.                                 
 
- *GET  _WALLSTRT  FROM  ACTI  ITEM=TIME WALL  VALUE=  14.9375000    
+ *GET  _WALLSTRT  FROM  ACTI  ITEM=TIME WALL  VALUE=  15.0511111    
 
  ASSIGN FILE RSTP TO file.rst                                                                                                                                                                                                                                                            
 
- *** NOTE ***                            CP =       0.188   TIME= 14:56:15
+ *** NOTE ***                            CP =       0.203   TIME= 15:03:04
  File= file.rst does not exist and will be created.                      
 
  *****  MAPDL SOLUTION ROUTINE  *****
@@ -206,7 +206,7 @@
 
  *** MAPDL - ENGINEERING ANALYSIS SYSTEM  RELEASE 2024 R1          24.1     ***
  Ansys Mechanical Enterprise Academic Research     
- 00454535  VERSION=WINDOWS x64   14:56:15  APR 23, 2025 CP=      0.281
+ 00454535  VERSION=WINDOWS x64   15:03:05  APR 23, 2025 CP=      0.281
 
  Balk_2--Eigenvalue Buckling (B5)                                              
 
@@ -221,16 +221,16 @@
    LINEAR PERTURBATION . . . . . . . . . . . . . .ON
    OFFSET TEMPERATURE FROM ABSOLUTE ZERO . . . . .  273.15    
 
- *** WARNING ***                         CP =       0.281   TIME= 14:56:15
+ *** WARNING ***                         CP =       0.281   TIME= 15:03:05
  Material number 5 (used by element 283) should normally have at least   
  one MP or one TB type command associated with it.  Output of energy by  
  material may not be available.                                          
 
- *** NOTE ***                            CP =       0.281   TIME= 14:56:15
+ *** NOTE ***                            CP =       0.281   TIME= 15:03:05
  The step data was checked and warning messages were found.              
   Please review output or errors file (                                  
  C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt              
- 2\ANSYS\_ProjectScratch\ScrE6D5\file0.err ) for these warning           
+ 2\ANSYS\_ProjectScratch\ScrCEB7\file0.err ) for these warning           
  messages.                                                               
 
                       L O A D   S T E P   O P T I O N S
@@ -241,13 +241,13 @@
       SUBSTEP. . . . . . . . . . . . . . . . . . .     1
    STRESS-STIFFENING . . . . . . . . . . . . . . .    ON
 
- *** NOTE ***                            CP =       0.344   TIME= 14:56:15
+ *** NOTE ***                            CP =       0.359   TIME= 15:03:05
  This SOLVE command is only used to generate the matrices needed to      
  perform the linear perturbation analysis.  The linear perturbation      
  analysis corresponds to time = 1 (load step = 1, substep = 1).  No      
  results are being written.                                              
 
- *** NOTE ***                            CP =       0.344   TIME= 14:56:15
+ *** NOTE ***                            CP =       0.359   TIME= 15:03:05
  The prior(base) analysis is LINEAR, use the total load prescribed in    
  the linear perturbation process to calculate the critical               
  eigen-buckling loads.                                                   
@@ -257,7 +257,7 @@
  BOUNDARY CONDITIONS IN DATABASE
 
 
- USE SYM. BLOCK LANCZOS METHOD TO EXTRACT       4 MODES
+ USE SYM. BLOCK LANCZOS METHOD TO EXTRACT       5 MODES
   EXTRACT EIGENVALUES CENTERED ABOUT   0.0000    
 
  ERASE THE CURRENT DATABASE OUTPUT CONTROL TABLE.
@@ -288,15 +288,15 @@
 
  *****  MAPDL SOLVE    COMMAND  *****
 
- *** WARNING ***                         CP =       0.422   TIME= 14:56:15
+ *** WARNING ***                         CP =       0.422   TIME= 15:03:05
  Element shape checking is currently inactive.  Issue SHPP,ON or         
  SHPP,WARN to reactivate, if desired.                                    
 
- *** NOTE ***                            CP =       0.422   TIME= 14:56:15
+ *** NOTE ***                            CP =       0.422   TIME= 15:03:05
  The model data was checked and warning messages were found.             
   Please review output or errors file (                                  
  C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt              
- 2\ANSYS\_ProjectScratch\ScrE6D5\file0.err ) for these warning           
+ 2\ANSYS\_ProjectScratch\ScrCEB7\file0.err ) for these warning           
  messages.                                                               
 
  *** SELECTION OF ELEMENT TECHNOLOGIES FOR APPLICABLE ELEMENTS ***
@@ -334,7 +334,7 @@
 
  *** MAPDL - ENGINEERING ANALYSIS SYSTEM  RELEASE 2024 R1          24.1     ***
  Ansys Mechanical Enterprise Academic Research     
- 00454535  VERSION=WINDOWS x64   14:56:15  APR 23, 2025 CP=      0.422
+ 00454535  VERSION=WINDOWS x64   15:03:05  APR 23, 2025 CP=      0.422
 
  Balk_2--Eigenvalue Buckling (B5)                                              
 
@@ -351,16 +351,16 @@
    PRESTRESS EFFECTS INCLUDED IF AVAILABLE . . . .YES
    GLOBALLY ASSEMBLED MATRIX . . . . . . . . . . .SYMMETRIC  
 
- *** WARNING ***                         CP =       0.422   TIME= 14:56:15
+ *** WARNING ***                         CP =       0.422   TIME= 15:03:05
  Material number 5 (used by element 283) should normally have at least   
  one MP or one TB type command associated with it.  Output of energy by  
  material may not be available.                                          
 
- *** NOTE ***                            CP =       0.422   TIME= 14:56:15
+ *** NOTE ***                            CP =       0.422   TIME= 15:03:05
  The step data was checked and warning messages were found.              
   Please review output or errors file (                                  
  C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt              
- 2\ANSYS\_ProjectScratch\ScrE6D5\file0.err ) for these warning           
+ 2\ANSYS\_ProjectScratch\ScrCEB7\file0.err ) for these warning           
  messages.                                                               
 
                       L O A D   S T E P   O P T I O N S
@@ -375,10 +375,10 @@
 
 
 
-  BLOCK LANCZOS CALCULATION OF UP TO     4 EIGENVECTORS.
+  BLOCK LANCZOS CALCULATION OF UP TO     5 EIGENVECTORS.
   NUMBER OF EQUATIONS              =         3376
   MAXIMUM WAVEFRONT                =           33
-  MAXIMUM MODES STORED             =            4
+  MAXIMUM MODES STORED             =            5
   MINIMUM EIGENVALUE               = -0.10000E+31
   MAXIMUM EIGENVALUE               =  0.10000E+31
   CENTER EIGENVALUE                =  0.00000E+00
@@ -392,7 +392,7 @@
   Total memory required for in-core solution       =     3.592 MB
   Total memory required for out-of-core solution   =     3.179 MB
 
- *** NOTE ***                            CP =       0.609   TIME= 14:56:15
+ *** NOTE ***                            CP =       0.562   TIME= 15:03:05
  The Distributed Sparse Matrix Solver is currently running in the        
  in-core memory mode.  This memory mode uses the most amount of memory   
  in order to avoid using the hard drive as much as possible, which most  
@@ -409,12 +409,12 @@
   Lanczos Memory Mode : INCORE
 
 
-  >> Shift # 1 :  |                                  : 4 Eigenvalues Converged
+  >> Shift # 1 :  |                                  : 5 Eigenvalues Converged
 
 
  *** MAPDL - ENGINEERING ANALYSIS SYSTEM  RELEASE 2024 R1          24.1     ***
  Ansys Mechanical Enterprise Academic Research     
- 00454535  VERSION=WINDOWS x64   14:56:15  APR 23, 2025 CP=      0.828
+ 00454535  VERSION=WINDOWS x64   15:03:05  APR 23, 2025 CP=      0.781
 
  Balk_2--Eigenvalue Buckling (B5)                                              
 
@@ -429,6 +429,7 @@
             2            10199.350    
             3            13444.681    
             4            25351.555    
+            5            26124.796    
 
 
 
@@ -437,8 +438,8 @@
 
         1        50  BEAM188       0.000   0.000000
         2        51  BEAM188       0.000   0.000000
-        3        90  BEAM188       0.016   0.000174
-        4        91  BEAM188       0.016   0.000172
+        3        90  BEAM188       0.000   0.000000
+        4        91  BEAM188       0.000   0.000000
         5         3  CLOAD201      0.000   0.000000
 
    *** NODAL LOAD CALCULATION TIMES
@@ -457,7 +458,7 @@
         1.938 MB WRITTEN ON ELEMENT SAVED DATA FILE: file0.esav
         0.250 MB WRITTEN ON ASSEMBLED MATRIX FILE: file0.full
         0.062 MB WRITTEN ON MODAL MATRIX FILE: file0.mode
-        0.750 MB WRITTEN ON RESULTS FILE: file0.rst
+        0.812 MB WRITTEN ON RESULTS FILE: file0.rst
  *************** Write FE CONNECTORS *********
 
  WRITE OUT CONSTRAINT EQUATIONS TO FILE= file.ce                                                                                                                                                                                                                                                             
@@ -467,17 +468,17 @@
  FINISH SOLUTION PROCESSING
 
 
- ***** ROUTINE COMPLETED *****  CP =         0.938
+ ***** ROUTINE COMPLETED *****  CP =         0.875
 
 
 
  PRINTOUT RESUMED BY /GOP
 
- *GET  _WALLASOL  FROM  ACTI  ITEM=TIME WALL  VALUE=  14.9375000    
+ *GET  _WALLASOL  FROM  ACTI  ITEM=TIME WALL  VALUE=  15.0513889    
 
  *** MAPDL - ENGINEERING ANALYSIS SYSTEM  RELEASE 2024 R1          24.1     ***
  Ansys Mechanical Enterprise Academic Research     
- 00454535  VERSION=WINDOWS x64   14:56:15  APR 23, 2025 CP=      0.938
+ 00454535  VERSION=WINDOWS x64   15:03:05  APR 23, 2025 CP=      0.891
 
  Balk_2--Eigenvalue Buckling (B5)                                              
 
@@ -485,7 +486,7 @@
 
           ***** MAPDL RESULTS INTERPRETATION (POST1) *****
 
- *** NOTE ***                            CP =       0.938   TIME= 14:56:15
+ *** NOTE ***                            CP =       0.891   TIME= 15:03:05
  Reading results into the database (SET command) will update the current 
  displacement and force boundary conditions in the database with the     
  values from the results file for that load set.  Note that any          
@@ -503,25 +504,25 @@
  EXIT THE MAPDL POST1 DATABASE PROCESSOR
 
 
- ***** ROUTINE COMPLETED *****  CP =         0.938
+ ***** ROUTINE COMPLETED *****  CP =         0.891
 
 
 
  PRINTOUT RESUMED BY /GOP
 
- *GET  _WALLDONE  FROM  ACTI  ITEM=TIME WALL  VALUE=  14.9375000    
+ *GET  _WALLDONE  FROM  ACTI  ITEM=TIME WALL  VALUE=  15.0513889    
 
  PARAMETER _PREPTIME =     0.000000000    
 
- PARAMETER _SOLVTIME =     9.000000000    
+ PARAMETER _SOLVTIME =     419.0000000    
 
  PARAMETER _POSTTIME =     0.000000000    
 
- PARAMETER _TOTALTIM =     9.000000000    
+ PARAMETER _TOTALTIM =     419.0000000    
 
  *GET  _DLBRATIO  FROM  ACTI  ITEM=SOLU DLBR  VALUE=  1.01408451    
 
- *GET  _COMBTIME  FROM  ACTI  ITEM=SOLU COMB  VALUE= 0.243285000E-01
+ *GET  _COMBTIME  FROM  ACTI  ITEM=SOLU COMB  VALUE= 0.242864000E-01
 
  *GET  _SSMODE   FROM  ACTI  ITEM=SOLU SSMM  VALUE=  2.00000000    
 
@@ -531,7 +532,7 @@
  --- Total number of nodes = 564
  --- Total number of elements = 285
  --- Element load balance ratio = 1.01408451
- --- Time to combine distributed files = 2.43285E-02
+ --- Time to combine distributed files = 2.42864E-02
  --- Sparse memory mode = 2
  --- Number of DOF = 3376
 
@@ -544,7 +545,7 @@
 +--------------------- M A P D L   S T A T I S T I C S ------------------------+
 
 Release: 2024 R1            Build: 24.1       Update: UP20231106   Platform: WINDOWS x64 
-Date Run: 04/23/2025   Time: 14:56     Process ID: 25324
+Date Run: 04/23/2025   Time: 15:03     Process ID: 19516
 Operating System: Windows 10  (Build: 19045)
 
 Processor Model: 12th Gen Intel(R) Core(TM) i5-12500
@@ -571,32 +572,32 @@ Input File: dummy.dat
 
   Core                Machine Name   Working Directory
  -----------------------------------------------------
-     0                M-REMOTE-007   C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt 2\ANSYS\_ProjectScratch\ScrE6D5
-     1                M-REMOTE-007   C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt 2\ANSYS\_ProjectScratch\ScrE6D5
-     2                M-REMOTE-007   C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt 2\ANSYS\_ProjectScratch\ScrE6D5
-     3                M-REMOTE-007   C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt 2\ANSYS\_ProjectScratch\ScrE6D5
+     0                M-REMOTE-007   C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt 2\ANSYS\_ProjectScratch\ScrCEB7
+     1                M-REMOTE-007   C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt 2\ANSYS\_ProjectScratch\ScrCEB7
+     2                M-REMOTE-007   C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt 2\ANSYS\_ProjectScratch\ScrCEB7
+     3                M-REMOTE-007   C:\Users\toberics\Downloads\Grupparbete-T.D\Håll.F\Projekt 2\ANSYS\_ProjectScratch\ScrCEB7
  
-Latency time from master to core     1 =    3.072 microseconds
-Latency time from master to core     2 =    2.808 microseconds
-Latency time from master to core     3 =    2.761 microseconds
+Latency time from master to core     1 =    2.839 microseconds
+Latency time from master to core     2 =    4.498 microseconds
+Latency time from master to core     3 =    2.791 microseconds
  
-Communication speed from master to core     1 = 11128.58 MB/sec
-Communication speed from master to core     2 = 11731.75 MB/sec
-Communication speed from master to core     3 =  9300.27 MB/sec
+Communication speed from master to core     1 = 10866.76 MB/sec
+Communication speed from master to core     2 =  9663.35 MB/sec
+Communication speed from master to core     3 = 12202.56 MB/sec
 
 Total CPU time for main thread                    :        1.2 seconds
-Total CPU time summed for all threads             :        1.6 seconds
+Total CPU time summed for all threads             :        1.5 seconds
 
 Elapsed time spent obtaining a license            :        0.3 seconds
 Elapsed time spent pre-processing model (/PREP7)  :        0.0 seconds
 Elapsed time spent solution - preprocessing       :        0.1 seconds
-Elapsed time spent computing solution             :        0.5 seconds
+Elapsed time spent computing solution             :        0.4 seconds
 Elapsed time spent solution - postprocessing      :        0.0 seconds
 Elapsed time spent post-processing model (/POST1) :        0.0 seconds
  
 Eigensolver used                                  :            Block Lanczos
 
-Sum of disk space used on all processes           :       19.3 MB
+Sum of disk space used on all processes           :       20.0 MB
 
 Sum of memory used on all processes               :      192.0 MB
 Sum of memory allocated on all processes          :     2880.0 MB
@@ -624,7 +625,7 @@ Total amount of I/O read from disk                :        0.1 GB
  |                                                                             |
  |-----------------------------------------------------------------------------|
  |                                                                             |
- |        CP Time      (sec) =          1.625       Time  =  14:56:16          |
+ |        CP Time      (sec) =          1.547       Time  =  15:03:06          |
  |        Elapsed Time (sec) =          3.000       Date  =  04/23/2025        |
  |                                                                             |
  *-----------------------------------------------------------------------------*
