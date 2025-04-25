@@ -17,7 +17,7 @@ antype,,restart,,,perturbation
 ! ****** End   Custom Load Command Snippet ******
 perturb,buckle,,CURRENT,ALLKEEP                    ! linear buckling analysis keeping loads from pre-stress analysis
 solve, elform                                       ! Generate matrices needed for perturbation analysis
-bucopt,lanb,5,,,center
+bucopt,lanb,2,,,center
 outres,erase
 outres,all,none
 outres,nsol,all
